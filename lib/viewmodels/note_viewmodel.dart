@@ -13,12 +13,17 @@ class noteviewmodel extends ChangeNotifier {
   }
 
   void addnote(String title, String content) {
+
+     if(title.trim().isEmpty && content.isEmpty){
+        return;
+      }
     notes.add(
       note(
         id: Random().nextInt(99999).toString(),
         title: title,
         content: content,
       ),
+     
     );
     _service.savenotes(notes);
     notifyListeners();

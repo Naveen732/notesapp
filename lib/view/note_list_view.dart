@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:note_taking/view/card.dart';
+import 'package:note_taking/view/edit_note_view.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/note_viewmodel.dart';
 import 'add_note_view.dart';
@@ -11,33 +12,73 @@ class notelistview extends StatelessWidget {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
         middle: Text(
-          ' notes',
+          ' notes app',
           style: TextStyle(color: CupertinoColors.systemGrey),
         ),
       ),
       child: SafeArea(
         child: Stack(
           children: [
-            
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: GridView.builder(
-                itemCount: vm.notes.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.9,
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: CupertinoSearchTextField(
+                    placeholder: 'search notes',
+                    onChanged: (value) => vm.setsearch(value),
+                  ),
                 ),
-                itemBuilder: (context, index) {
-                  final note = vm.notes[index];
-                  return NoteCard(
-                    title: note.title,
-                    content: note.content,
-                    onDelete: () => vm.deletenote(note.id),
-                  );
-                },
-              ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child:
+                        vm.notesfiltered.isEmpty && vm.searchText.isNotEmpty
+                            ? Center(
+                              child: Text(
+                                'notes not found',
+                                style: TextStyle(
+                                  color: CupertinoColors.systemGrey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
+                            : GridView.builder(
+                              itemCount: vm.notesfiltered.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 12,
+                                    mainAxisSpacing: 12,
+                                    childAspectRatio: 0.9,
+                                  ),
+                              itemBuilder: (context, index) {
+                                final note = vm.notesfiltered[index];
+                                return NoteCard(
+                                  title: note.title,
+                                  content: note.content,
+                                  onDelete: () => vm.deletenote(note.id),
+                                  onTap: () async {
+                                    final result = await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder:
+                                            (_) => EditNoteView(noteData: note),
+                                      ),
+                                    );
+                                    if (result != null) {
+                                      vm.updatenote(
+                                        note.id,
+                                        result['title'],
+                                        result['content'],
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                  ),
+                ),
+              ],
             ),
             Positioned(
               bottom: 20,

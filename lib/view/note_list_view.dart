@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import '../viewmodels/note_viewmodel.dart';
 import 'add_note_view.dart';
 
-class notelistview extends StatelessWidget {
+class NoteListView extends StatelessWidget {
   Widget build(BuildContext context) {
-    final vm = context.watch<noteviewmodel>();
+    final vm = context.watch<NoteViewModel>();
 
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(

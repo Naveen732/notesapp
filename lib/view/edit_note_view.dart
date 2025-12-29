@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:note_taking/models/note_model.dart';
 
 class EditNoteView extends StatefulWidget {
-  final note noteData;
+  final Note noteData;
 
   const EditNoteView({super.key, required this.noteData});
 

@@ -1,14 +1,17 @@
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import '../models/note_model.dart';
-import '../services/note_service.dart';
+import '../repositories/note_repository.dart';
 
-class noteviewmodel extends ChangeNotifier {
-  final noteservice _service = noteservice();
-  List<note> notes = [];
+class NoteViewModel extends ChangeNotifier {
+  final NoteRepository _s = NoteRepository();
+
+    List<Note> notes = [];
+  
   String _search = '';
 
-  List<note> get notesfiltered {
+   String get searchText => _search;
+
+  List<Note> get notesfiltered {
     if (_search.isEmpty) return notes;
 
     return notes
@@ -21,7 +24,7 @@ class noteviewmodel extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    notes = await _service.loadnotes();
+    notes = await _s.fetchNotes();
     notifyListeners();
   }
 
@@ -30,35 +33,45 @@ class noteviewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String get searchText => _search;
-
-  void addnote(String title, String content) {
+ void addnote(String title, String content) {
     if (title.isEmpty && content.isEmpty) {
       return;
     }
-    notes.add(
-      note(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: title,
-        content: content,
-      ),
-    );
-    _service.savenotes(notes);
-    notifyListeners();
-  }
-
-  void deletenote(String id) {
-    notes.removeWhere((n) => n.id == id);
-    _service.savenotes(notes);
-    notifyListeners();
-  }
-
-  void updatenote(String id, String title, String content) {
-    final index = notes.indexWhere((n) => n.id == id);
-    if (index != -1) {
-      notes[index] = note(id: id, title: title, content: content);
-      _service.savenotes(notes);
+    try {
+      notes.add(
+        Note(
+          id: DateTime.now().millisecondsSinceEpoch,
+          title: title,
+          content: content,
+        ),
+      );
+      _s.saveNotes(notes);
       notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to add note: $e');
+    }
+  }
+
+  void deletenote(int id) {
+    try {
+      notes.removeWhere((n) => n.id == id);
+      _s.saveNotes(notes);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to delete note: $e');
+    }
+  }
+
+  void updatenote(int id, String title, String content) {
+    try {
+      final index = notes.indexWhere((n) => n.id == id);
+      if (index != -1) {
+        notes[index] = Note(id: id, title: title, content: content);
+        _s.saveNotes(notes);
+        notifyListeners();
+      }
+    } catch (e) {
+      throw Exception('Failed to update note: $e');
     }
   }
 }

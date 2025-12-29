@@ -10,7 +10,7 @@ class AddNoteView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<noteviewmodel>();
+    final vm = context.read<NoteViewModel>();
 
     return CupertinoPageScaffold(
       child: SafeArea(

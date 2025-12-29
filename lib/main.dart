@@ -13,10 +13,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => noteviewmodel()..init(),
+      create: (_) => NoteViewModel()..init(),
       child: CupertinoApp(
         debugShowCheckedModeBanner: false,
-          home: notelistview(),
+          home: NoteListView(),
       ),
     );
   }

@@ -1,9 +1,9 @@
-class note {
-  final String id;
+class Note {
+  final int id;
   final String title;
   final String content;
 
-  note({required this.id, required this.title, required this.content});
+  Note({required this.id, required this.title, required this.content});
 
   Map<String, dynamic> tojson() => {
     'id': id,
@@ -11,7 +11,7 @@ class note {
     'content': content,
   };
 
-  factory note.fromjson(Map<String, dynamic> json) {
-    return note(id: json['id'], title: json['title'], content: json['content']);
+  factory Note.fromjson(Map<String, dynamic> json) {
+    return Note(id: json['id'] as int, title: json['title'], content: json['content']);
   }
 }

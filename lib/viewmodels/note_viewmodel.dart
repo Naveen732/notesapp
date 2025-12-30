@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:note_taking/repositories/note_service.dart';
 import '../models/note_model.dart';
 import '../repositories/note_repository.dart';
 
 class NoteViewModel extends ChangeNotifier {
-  final NoteRepository _s = NoteRepository();
 
-    List<Note> notes = [];
-  
+  final NoteRepository _repo = NoteRepository(NoteService());
+
+
+  List<Note> notes = [];
+
   String _search = '';
 
    String get searchText => _search;
@@ -24,7 +27,7 @@ class NoteViewModel extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    notes = await _s.fetchNotes();
+    notes = await _repo.fetchNotes();
     notifyListeners();
   }
 
@@ -33,45 +36,42 @@ class NoteViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
- void addnote(String title, String content) {
-    if (title.isEmpty && content.isEmpty) {
-      return;
-    }
-    try {
-      notes.add(
-        Note(
-          id: DateTime.now().millisecondsSinceEpoch,
-          title: title,
-          content: content,
-        ),
-      );
-      _s.saveNotes(notes);
-      notifyListeners();
-    } catch (e) {
-      throw Exception('Failed to add note: $e');
-    }
-  }
+Future<void> addNote(String title, String content) async {
+  if (title.isEmpty && content.isEmpty) return;
 
-  void deletenote(int id) {
+  try {
+    final note = Note(
+      id: DateTime.now().millisecondsSinceEpoch,
+      title: title,
+      content: content,
+    );
+    notes = await _repo.addNote(notes, note);
+    notifyListeners();
+  } catch (e) {
+    throw Exception('Failed to add note: $e');
+  }
+}
+
+  Future<void> deleteNote(int id) async {
     try {
-      notes.removeWhere((n) => n.id == id);
-      _s.saveNotes(notes);
+      notes = await _repo.deleteNote(notes, id);
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to delete note: $e');
     }
+   
   }
 
-  void updatenote(int id, String title, String content) {
-    try {
-      final index = notes.indexWhere((n) => n.id == id);
-      if (index != -1) {
-        notes[index] = Note(id: id, title: title, content: content);
-        _s.saveNotes(notes);
-        notifyListeners();
-      }
+  Future<void> updateNote(int id, String title, String content) async {
+    try{
+    final updated = Note(id: id, title: title, content: content);
+    notes = await _repo.updateNote(notes, updated);
+    notifyListeners();
     } catch (e) {
       throw Exception('Failed to update note: $e');
     }
   }
+
+
+
 }

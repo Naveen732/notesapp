@@ -30,7 +30,7 @@ class _EditNoteViewState extends State<EditNoteView> {
           padding: EdgeInsets.zero,
           child: const Icon(
             CupertinoIcons.check_mark,
-            color: CupertinoColors.white,
+            color: CupertinoColors.systemGrey,
           ),
           onPressed: () {
             Navigator.pop(context, {

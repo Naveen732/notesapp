@@ -10,6 +10,7 @@ class AddNoteView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final vm = context.read<NoteViewModel>();
 
     return CupertinoPageScaffold(
@@ -30,10 +31,10 @@ class AddNoteView extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         child: const Icon(
                           CupertinoIcons.back,
-                          color: CupertinoColors.white,
+                          color: CupertinoColors.systemGrey,
                         ),
                         onPressed: () {
-                          vm.addnote(
+                          vm.addNote(
                             titlecontroller.text,
                             contentcontroller.text,
                           );
@@ -47,10 +48,10 @@ class AddNoteView extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         child: const Icon(
                           CupertinoIcons.check_mark,
-                          color: CupertinoColors.white,
+                          color: CupertinoColors.systemGrey,
                         ),
                         onPressed: () {
-                          vm.addnote(
+                          vm.addNote(
                             titlecontroller.text,
                             contentcontroller.text,
                           );
@@ -74,7 +75,6 @@ class AddNoteView extends StatelessWidget {
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
                     ),
-                    decoration: const BoxDecoration(color: Color(0xff121212)),
                   ),
                 ),
 
@@ -97,7 +97,6 @@ class AddNoteView extends StatelessWidget {
                       maxLines: null,
                       expands: true,
                       textAlignVertical: TextAlignVertical.top,
-                      decoration: const BoxDecoration(color: Color(0xff121212)),
                     ),
                   ),
                 ),
